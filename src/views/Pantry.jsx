@@ -6,19 +6,19 @@ import EditItem from '../EditItem.jsx';
 const pulseKeyframes = `
 @keyframes restockPulse {
   0% { box-shadow: 0 0 0 0 rgba(255, 60, 60, 0.0); }
-  50% { box-shadow: 0 0 12px 2px rgba(255, 60, 60, 0.25); }
+  50% { box-shadow: 0 0 14px 3px rgba(255, 60, 60, 0.2); }
   100% { box-shadow: 0 0 0 0 rgba(255, 60, 60, 0.0); }
 }
 `;
 
 const styles = {
-  list: { padding: '0 12px', overflow: 'hidden' },
+  list: { padding: '0 16px', overflow: 'hidden' },
   cardWrapper: {
-    position: 'relative', marginBottom: 10, borderRadius: 12,
+    position: 'relative', marginBottom: 12, borderRadius: 16,
     overflow: 'hidden'
   },
   cardWrapperDue: {
-    position: 'relative', marginBottom: 10, borderRadius: 12,
+    position: 'relative', marginBottom: 12, borderRadius: 16,
     overflow: 'visible',
     animation: 'restockPulse 2.5s ease-in-out infinite'
   },
@@ -27,35 +27,44 @@ const styles = {
     display: 'flex', alignItems: 'stretch'
   },
   editBtn: {
-    width: 64, border: 'none', background: '#2196f3',
+    width: 70, border: 'none', background: '#2196f3',
     color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer'
   },
   delBtn: {
-    width: 64, border: 'none', background: '#ef5350',
+    width: 70, border: 'none', background: '#ef5350',
     color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer'
   },
   card: {
-    position: 'relative', background: '#1a1a1a', borderRadius: 12,
-    padding: 14, display: 'flex', justifyContent: 'space-between',
+    position: 'relative', background: '#141414', borderRadius: 16,
+    padding: '18px 16px', display: 'flex', justifyContent: 'space-between',
     alignItems: 'center', transition: 'transform 0.2s ease',
-    zIndex: 2
+    zIndex: 2, border: '1px solid #1e1e1e'
   },
   cardDue: {
-    position: 'relative', background: '#1a1a1a', borderRadius: 12,
-    padding: 14, display: 'flex', justifyContent: 'space-between',
+    position: 'relative', background: '#141414', borderRadius: 16,
+    padding: '18px 16px', display: 'flex', justifyContent: 'space-between',
     alignItems: 'center', transition: 'transform 0.2s ease',
-    zIndex: 2, borderLeft: '3px solid #ff3c3c'
+    zIndex: 2, borderLeft: '3px solid #ff3c3c', border: '1px solid #2a1a1a'
   },
-  name: { fontSize: 16, fontWeight: 600, color: '#eee' },
-  meta: { fontSize: 12, color: '#888', marginTop: 4 },
-  due: { fontSize: 11, color: '#ff3c3c', marginTop: 4, fontWeight: 600 },
+  name: { fontSize: 17, fontWeight: 700, color: '#fff' },
+  meta: {
+    fontSize: 12, color: '#f97316', marginTop: 5,
+    textTransform: 'uppercase', letterSpacing: 0.5, fontWeight: 600
+  },
+  cycle: {
+    fontSize: 11, color: '#555', marginTop: 3
+  },
+  due: {
+    fontSize: 10, color: '#ff3c3c', marginTop: 4, fontWeight: 700,
+    letterSpacing: 0.3
+  },
   toBuyBtn: {
-    padding: '8px 14px', border: 'none', borderRadius: 8,
-    fontSize: 13, fontWeight: 600, cursor: 'pointer',
-    background: '#333', color: '#ffa726', flexShrink: 0
+    padding: '10px 20px', border: 'none', borderRadius: 20,
+    fontSize: 13, fontWeight: 700, cursor: 'pointer',
+    background: '#f97316', color: '#fff', flexShrink: 0
   },
   empty: {
-    textAlign: 'center', color: '#555', padding: 40, fontSize: 14
+    textAlign: 'center', color: '#444', padding: 50, fontSize: 15
   }
 };
 
@@ -73,7 +82,7 @@ function SwipeCard({ children, onEdit, onDelete, isDue }) {
 
   function handleTouchMove(e) {
     const diff = e.touches[0].clientX - startX.current;
-    currentX.current = Math.min(0, Math.max(-128, diff));
+    currentX.current = Math.min(0, Math.max(-140, diff));
     if (cardRef.current) {
       cardRef.current.style.transform = `translateX(${currentX.current}px)`;
     }
@@ -83,7 +92,7 @@ function SwipeCard({ children, onEdit, onDelete, isDue }) {
     if (cardRef.current) {
       cardRef.current.style.transition = 'transform 0.2s ease';
       if (currentX.current < -50) {
-        cardRef.current.style.transform = 'translateX(-128px)';
+        cardRef.current.style.transform = 'translateX(-140px)';
       } else {
         cardRef.current.style.transform = 'translateX(0)';
       }
@@ -131,7 +140,7 @@ export default function Pantry({ items, onRefresh }) {
   }
 
   if (pantryItems.length === 0) {
-    return <div style={styles.empty}>Pantry is empty. Add items with +</div>;
+    return <div style={styles.empty}>Pantry is empty. Tap + to add items.</div>;
   }
 
   return (
@@ -151,9 +160,11 @@ export default function Pantry({ items, onRefresh }) {
                 <div style={styles.name}>{item.name}</div>
                 <div style={styles.meta}>
                   {item.quantity} {item.unit}
-                  {item.avgRestockDays > 0 && ` · ~${item.avgRestockDays}d cycle`}
                 </div>
-                {due && <div style={styles.due}>⚠ Restock due</div>}
+                {item.avgRestockDays > 0 && (
+                  <div style={styles.cycle}>~{item.avgRestockDays}d cycle</div>
+                )}
+                {due && <div style={styles.due}>⚠ RESTOCK DUE</div>}
               </div>
               <button
                 style={styles.toBuyBtn}

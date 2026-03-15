@@ -11,36 +11,39 @@ const TABS = ['Pantry', 'To Buy', 'Bought'];
 const styles = {
   container: {
     maxWidth: 420, margin: '0 auto', minHeight: '100vh',
-    display: 'flex', flexDirection: 'column', background: '#111'
+    display: 'flex', flexDirection: 'column', background: '#0a0a0a',
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
   },
   header: {
-    padding: '16px 16px 0', display: 'flex',
+    padding: '24px 20px 0', display: 'flex',
     justifyContent: 'space-between', alignItems: 'center'
   },
-  logo: { fontSize: 22, fontWeight: 800, color: '#fff', letterSpacing: -0.5 },
+  logo: {
+    fontSize: 34, fontWeight: 800, color: '#fff', letterSpacing: -1
+  },
   addBtn: {
-    width: 40, height: 40, borderRadius: '50%', border: 'none',
-    background: '#4caf50', color: '#fff', fontSize: 24,
-    fontWeight: 600, cursor: 'pointer', display: 'flex',
+    width: 48, height: 48, borderRadius: '50%', border: 'none',
+    background: '#00ff66', color: '#000', fontSize: 28,
+    fontWeight: 700, cursor: 'pointer', display: 'flex',
     alignItems: 'center', justifyContent: 'center', lineHeight: 1
   },
   tabs: {
-    display: 'flex', padding: '12px 12px 0', gap: 4
+    display: 'flex', padding: '20px 20px 0', gap: 8
   },
   tab: {
     flex: 1, padding: '10px 0', textAlign: 'center',
-    border: 'none', borderRadius: '8px 8px 0 0',
+    border: 'none', borderRadius: 20,
     fontSize: 14, fontWeight: 600, cursor: 'pointer',
     background: '#1a1a1a', color: '#666'
   },
   tabActive: {
     flex: 1, padding: '10px 0', textAlign: 'center',
-    border: 'none', borderRadius: '8px 8px 0 0',
+    border: 'none', borderRadius: 20,
     fontSize: 14, fontWeight: 600, cursor: 'pointer',
-    background: '#222', color: '#fff'
+    background: '#fff', color: '#000'
   },
   content: {
-    flex: 1, paddingTop: 12, paddingBottom: 20
+    flex: 1, paddingTop: 16, paddingBottom: 20
   }
 };
 

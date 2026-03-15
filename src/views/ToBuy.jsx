@@ -3,21 +3,24 @@ import { moveToBought } from '../logic.js';
 import { putItem } from '../db.js';
 
 const styles = {
-  list: { padding: '0 12px' },
+  list: { padding: '0 16px' },
   card: {
-    background: '#1a1a1a', borderRadius: 12, padding: 14,
-    marginBottom: 10, display: 'flex', justifyContent: 'space-between',
-    alignItems: 'center'
+    background: '#141414', borderRadius: 16, padding: '18px 16px',
+    marginBottom: 12, display: 'flex', justifyContent: 'space-between',
+    alignItems: 'center', border: '1px solid #1e1e1e'
   },
-  name: { fontSize: 16, fontWeight: 600, color: '#eee' },
-  meta: { fontSize: 12, color: '#888', marginTop: 4 },
+  name: { fontSize: 17, fontWeight: 700, color: '#fff' },
+  meta: {
+    fontSize: 12, color: '#f97316', marginTop: 5,
+    textTransform: 'uppercase', letterSpacing: 0.5, fontWeight: 600
+  },
   btn: {
-    padding: '8px 16px', border: 'none', borderRadius: 8,
-    background: '#4caf50', color: '#fff', fontSize: 13,
-    fontWeight: 600, cursor: 'pointer'
+    padding: '10px 20px', border: 'none', borderRadius: 20,
+    background: '#00ff66', color: '#000', fontSize: 13,
+    fontWeight: 700, cursor: 'pointer'
   },
   empty: {
-    textAlign: 'center', color: '#555', padding: 40, fontSize: 14
+    textAlign: 'center', color: '#444', padding: 50, fontSize: 15
   }
 };
 
