@@ -12,10 +12,11 @@ const styles = {
   container: {
     maxWidth: 420, margin: '0 auto', minHeight: '100vh',
     display: 'flex', flexDirection: 'column', background: '#0a0a0a',
-    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    paddingTop: 'env(safe-area-inset-top, 40px)'
   },
   header: {
-    padding: '24px 20px 0', display: 'flex',
+    padding: '16px 20px 0', display: 'flex',
     justifyContent: 'space-between', alignItems: 'center'
   },
   logo: {
@@ -28,7 +29,7 @@ const styles = {
     alignItems: 'center', justifyContent: 'center', lineHeight: 1
   },
   tabs: {
-    display: 'flex', padding: '20px 20px 0', gap: 8
+    display: 'flex', padding: '16px 20px 0', gap: 8
   },
   tab: {
     flex: 1, padding: '10px 0', textAlign: 'center',
