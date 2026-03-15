@@ -65,6 +65,35 @@ const styles = {
     width: '100%', padding: 12, border: 'none', borderRadius: 10,
     background: 'transparent', color: '#888', fontSize: 14,
     cursor: 'pointer', marginTop: 4
+  },
+  confirmOverlay: {
+    position: 'fixed', inset: 0,
+    background: 'rgba(0,0,0,0.8)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    zIndex: 200
+  },
+  confirmBox: {
+    background: '#1a1a1a', borderRadius: 14, padding: 20,
+    width: '85%', maxWidth: 340
+  },
+  confirmTitle: {
+    fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 10
+  },
+  confirmText: {
+    fontSize: 14, color: '#aaa', marginBottom: 18, lineHeight: 1.5
+  },
+  confirmBtns: {
+    display: 'flex', gap: 10
+  },
+  confirmKeep: {
+    flex: 1, padding: 12, border: 'none', borderRadius: 8,
+    background: '#333', color: '#eee', fontSize: 14,
+    fontWeight: 600, cursor: 'pointer'
+  },
+  confirmReset: {
+    flex: 1, padding: 12, border: 'none', borderRadius: 8,
+    background: '#ef5350', color: '#fff', fontSize: 14,
+    fontWeight: 600, cursor: 'pointer'
   }
 };
 
@@ -73,18 +102,42 @@ export default function EditItem({ item, onClose, onSaved }) {
   const [quantity, setQuantity] = useState(String(item.quantity));
   const [unit, setUnit] = useState(item.unit);
   const [showUnits, setShowUnits] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [pendingItem, setPendingItem] = useState(null);
+
+  function buildUpdatedItem(resetHistory) {
+    return {
+      ...item,
+      name: name.trim(),
+      quantity: Number(quantity) || 1,
+      unit,
+      restockHistory: resetHistory ? [] : item.restockHistory,
+      avgRestockDays: resetHistory ? 0 : item.avgRestockDays
+    };
+  }
 
   async function handleSave() {
     const trimmed = name.trim();
     if (!trimmed) return;
 
-    const updated = {
-      ...item,
-      name: trimmed,
-      quantity: Number(quantity) || 1,
-      unit
-    };
+    const qtyChanged = Number(quantity) !== item.quantity;
+    const unitChanged = unit !== item.unit;
+    const hasHistory = item.restockHistory.length > 0;
 
+    if ((qtyChanged || unitChanged) && hasHistory) {
+      setPendingItem(true);
+      setShowConfirm(true);
+      return;
+    }
+
+    const updated = buildUpdatedItem(false);
+    await putItem(updated);
+    onSaved();
+    onClose();
+  }
+
+  async function handleConfirm(reset) {
+    const updated = buildUpdatedItem(reset);
     await putItem(updated);
     onSaved();
     onClose();
@@ -137,6 +190,25 @@ export default function EditItem({ item, onClose, onSaved }) {
         <button style={styles.btn} onClick={handleSave}>Save Changes</button>
         <button style={styles.cancel} onClick={onClose}>Cancel</button>
       </div>
+
+      {showConfirm && (
+        <div style={styles.confirmOverlay} onClick={() => setShowConfirm(false)}>
+          <div style={styles.confirmBox} onClick={e => e.stopPropagation()}>
+            <div style={styles.confirmTitle}>Reset restock tracking?</div>
+            <div style={styles.confirmText}>
+              You changed the quantity or unit. Old restock data may not match your new buying pattern.
+            </div>
+            <div style={styles.confirmBtns}>
+              <button style={styles.confirmKeep} onClick={() => handleConfirm(false)}>
+                Keep History
+              </button>
+              <button style={styles.confirmReset} onClick={() => handleConfirm(true)}>
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -3,11 +3,24 @@ import { isRestockDue, moveToBuy } from '../logic.js';
 import { putItem, deleteItem } from '../db.js';
 import EditItem from '../EditItem.jsx';
 
+const pulseKeyframes = `
+@keyframes restockPulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 60, 60, 0.0); }
+  50% { box-shadow: 0 0 12px 2px rgba(255, 60, 60, 0.25); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 60, 60, 0.0); }
+}
+`;
+
 const styles = {
   list: { padding: '0 12px', overflow: 'hidden' },
   cardWrapper: {
     position: 'relative', marginBottom: 10, borderRadius: 12,
     overflow: 'hidden'
+  },
+  cardWrapperDue: {
+    position: 'relative', marginBottom: 10, borderRadius: 12,
+    overflow: 'visible',
+    animation: 'restockPulse 2.5s ease-in-out infinite'
   },
   actions: {
     position: 'absolute', right: 0, top: 0, bottom: 0,
@@ -31,11 +44,11 @@ const styles = {
     position: 'relative', background: '#1a1a1a', borderRadius: 12,
     padding: 14, display: 'flex', justifyContent: 'space-between',
     alignItems: 'center', transition: 'transform 0.2s ease',
-    zIndex: 2, borderLeft: '3px solid #ff9800'
+    zIndex: 2, borderLeft: '3px solid #ff3c3c'
   },
   name: { fontSize: 16, fontWeight: 600, color: '#eee' },
   meta: { fontSize: 12, color: '#888', marginTop: 4 },
-  due: { fontSize: 11, color: '#ff9800', marginTop: 4, fontWeight: 600 },
+  due: { fontSize: 11, color: '#ff3c3c', marginTop: 4, fontWeight: 600 },
   toBuyBtn: {
     padding: '8px 14px', border: 'none', borderRadius: 8,
     fontSize: 13, fontWeight: 600, cursor: 'pointer',
@@ -46,11 +59,10 @@ const styles = {
   }
 };
 
-function SwipeCard({ children, onEdit, onDelete }) {
+function SwipeCard({ children, onEdit, onDelete, isDue }) {
   const startX = useRef(0);
   const currentX = useRef(0);
   const cardRef = useRef(null);
-  const swiped = useRef(false);
 
   function handleTouchStart(e) {
     startX.current = e.touches[0].clientX;
@@ -72,10 +84,8 @@ function SwipeCard({ children, onEdit, onDelete }) {
       cardRef.current.style.transition = 'transform 0.2s ease';
       if (currentX.current < -50) {
         cardRef.current.style.transform = 'translateX(-128px)';
-        swiped.current = true;
       } else {
         cardRef.current.style.transform = 'translateX(0)';
-        swiped.current = false;
       }
     }
   }
@@ -84,12 +94,11 @@ function SwipeCard({ children, onEdit, onDelete }) {
     if (cardRef.current) {
       cardRef.current.style.transition = 'transform 0.2s ease';
       cardRef.current.style.transform = 'translateX(0)';
-      swiped.current = false;
     }
   }
 
   return (
-    <div style={styles.cardWrapper}>
+    <div style={isDue ? styles.cardWrapperDue : styles.cardWrapper}>
       <div style={styles.actions}>
         <button style={styles.editBtn} onClick={() => { resetSwipe(); onEdit(); }}>Edit</button>
         <button style={styles.delBtn} onClick={() => { resetSwipe(); onDelete(); }}>Delete</button>
@@ -127,6 +136,7 @@ export default function Pantry({ items, onRefresh }) {
 
   return (
     <div style={styles.list}>
+      <style>{pulseKeyframes}</style>
       {pantryItems.map(item => {
         const due = isRestockDue(item);
         return (
@@ -134,6 +144,7 @@ export default function Pantry({ items, onRefresh }) {
             key={item.id}
             onEdit={() => setEditingItem(item)}
             onDelete={() => handleDelete(item.id)}
+            isDue={due}
           >
             <div style={due ? styles.cardDue : styles.card}>
               <div>
