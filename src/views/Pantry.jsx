@@ -23,9 +23,10 @@ const styles = {
     animation: 'restockPulse 2.5s ease-in-out infinite'
   },
   actions: {
-    position: 'absolute', right: 0, top: 0, bottom: 0,
+    position: 'absolute', right: 0, top: 0, bottom: 0, left: 0,
     display: 'flex', alignItems: 'stretch',
-    borderRadius: '0 16px 16px 0', overflow: 'hidden'
+    justifyContent: 'flex-end',
+    background: '#0a0a0a', borderRadius: 16
   },
   editBtn: {
     width: 70, border: 'none', background: '#2196f3',
