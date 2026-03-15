@@ -36,7 +36,7 @@ const styles = {
   },
   btn: {
     width: '100%', padding: 14, border: 'none', borderRadius: 10,
-    background: '#4caf50', color: '#fff', fontSize: 16,
+    background: '#2196f3', color: '#fff', fontSize: 16,
     fontWeight: 600, cursor: 'pointer', marginTop: 6
   },
   cancel: {
@@ -46,40 +46,36 @@ const styles = {
   }
 };
 
-export default function QuickAdd({ onClose, onAdded }) {
-  const [name, setName] = useState('');
-  const [quantity, setQuantity] = useState('1');
-  const [unit, setUnit] = useState('pcs');
-  const [threshold, setThreshold] = useState('1');
+export default function EditItem({ item, onClose, onSaved }) {
+  const [name, setName] = useState(item.name);
+  const [quantity, setQuantity] = useState(String(item.quantity));
+  const [unit, setUnit] = useState(item.unit);
+  const [threshold, setThreshold] = useState(String(item.threshold));
 
-  async function handleAdd() {
+  async function handleSave() {
     const trimmed = name.trim();
     if (!trimmed) return;
 
-    const item = {
-      id: crypto.randomUUID(),
+    const updated = {
+      ...item,
       name: trimmed,
       quantity: Number(quantity) || 1,
       unit: unit.trim() || 'pcs',
-      threshold: Number(threshold) || 1,
-      status: 'pantry',
-      restockHistory: [],
-      avgRestockDays: 0
+      threshold: Number(threshold) || 1
     };
 
-    await putItem(item);
-    onAdded();
+    await putItem(updated);
+    onSaved();
     onClose();
   }
 
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div style={styles.modal} onClick={e => e.stopPropagation()}>
-        <div style={styles.title}>Quick Add</div>
+        <div style={styles.title}>Edit Item</div>
         <span style={styles.label}>Item name</span>
         <input
           style={styles.input}
-          placeholder="e.g. Rice, Milk, Eggs"
           value={name}
           onChange={e => setName(e.target.value)}
           autoFocus
@@ -89,7 +85,6 @@ export default function QuickAdd({ onClose, onAdded }) {
             <span style={styles.label}>Quantity</span>
             <input
               style={styles.halfInput}
-              placeholder="1"
               type="number"
               value={quantity}
               onChange={e => setQuantity(e.target.value)}
@@ -99,7 +94,6 @@ export default function QuickAdd({ onClose, onAdded }) {
             <span style={styles.label}>Unit</span>
             <input
               style={styles.halfInput}
-              placeholder="kg, pcs, L"
               value={unit}
               onChange={e => setUnit(e.target.value)}
             />
@@ -108,12 +102,11 @@ export default function QuickAdd({ onClose, onAdded }) {
         <span style={styles.label}>Low stock threshold</span>
         <input
           style={styles.input}
-          placeholder="Notify when qty drops below this"
           type="number"
           value={threshold}
           onChange={e => setThreshold(e.target.value)}
         />
-        <button style={styles.btn} onClick={handleAdd}>Add to Pantry</button>
+        <button style={styles.btn} onClick={handleSave}>Save Changes</button>
         <button style={styles.cancel} onClick={onClose}>Cancel</button>
       </div>
     </div>
