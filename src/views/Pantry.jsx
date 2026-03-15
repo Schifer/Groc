@@ -39,7 +39,7 @@ const styles = {
     position: 'relative', background: '#161616', borderRadius: 16,
     padding: '18px 16px', display: 'flex', justifyContent: 'space-between',
     alignItems: 'center', transition: 'transform 0.2s ease',
-    zIndex: 2, border: 'none', outline: 'none'
+    zIndex: 2
   },
   cardDue: {
     position: 'relative', background: '#161616', borderRadius: 16,
@@ -73,6 +73,7 @@ function SwipeCard({ children, onEdit, onDelete, isDue }) {
   const startX = useRef(0);
   const currentX = useRef(0);
   const cardRef = useRef(null);
+  const [swiped, setSwiped] = useState(false);
 
   function handleTouchStart(e) {
     startX.current = e.touches[0].clientX;
@@ -84,6 +85,7 @@ function SwipeCard({ children, onEdit, onDelete, isDue }) {
   function handleTouchMove(e) {
     const diff = e.touches[0].clientX - startX.current;
     currentX.current = Math.min(0, Math.max(-140, diff));
+    if (currentX.current < -10 && !swiped) setSwiped(true);
     if (cardRef.current) {
       cardRef.current.style.transform = `translateX(${currentX.current}px)`;
     }
@@ -96,6 +98,7 @@ function SwipeCard({ children, onEdit, onDelete, isDue }) {
         cardRef.current.style.transform = 'translateX(-140px)';
       } else {
         cardRef.current.style.transform = 'translateX(0)';
+        setSwiped(false);
       }
     }
   }
@@ -104,15 +107,18 @@ function SwipeCard({ children, onEdit, onDelete, isDue }) {
     if (cardRef.current) {
       cardRef.current.style.transition = 'transform 0.2s ease';
       cardRef.current.style.transform = 'translateX(0)';
+      setSwiped(false);
     }
   }
 
   return (
     <div style={isDue ? styles.cardWrapperDue : styles.cardWrapper}>
-      <div style={styles.actions}>
-        <button style={styles.editBtn} onClick={() => { resetSwipe(); onEdit(); }}>Edit</button>
-        <button style={styles.delBtn} onClick={() => { resetSwipe(); onDelete(); }}>Delete</button>
-      </div>
+      {swiped && (
+        <div style={styles.actions}>
+          <button style={styles.editBtn} onClick={() => { resetSwipe(); onEdit(); }}>Edit</button>
+          <button style={styles.delBtn} onClick={() => { resetSwipe(); onDelete(); }}>Delete</button>
+        </div>
+      )}
       <div
         ref={cardRef}
         onTouchStart={handleTouchStart}
