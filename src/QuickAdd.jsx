@@ -29,18 +29,32 @@ const styles = {
     display: 'flex', gap: 10, marginBottom: 14
   },
   halfCol: {
-    flex: 1, minWidth: 0
+    flex: 1, minWidth: 0, position: 'relative'
   },
   halfInput: {
     width: '100%', padding: '12px 14px',
     background: '#222', border: '1px solid #333', borderRadius: 8,
     color: '#eee', fontSize: 16, outline: 'none'
   },
-  select: {
+  unitBtn: {
     width: '100%', padding: '12px 14px',
     background: '#222', border: '1px solid #333', borderRadius: 8,
-    color: '#eee', fontSize: 16, outline: 'none',
-    appearance: 'none', WebkitAppearance: 'none'
+    color: '#eee', fontSize: 16, textAlign: 'left', cursor: 'pointer'
+  },
+  unitDropdown: {
+    position: 'absolute', bottom: '100%', left: 0, right: 0,
+    background: '#222', border: '1px solid #333', borderRadius: 8,
+    maxHeight: 180, overflowY: 'auto', zIndex: 10,
+    marginBottom: 4
+  },
+  unitOption: {
+    padding: '10px 14px', color: '#eee', fontSize: 15,
+    cursor: 'pointer', borderBottom: '1px solid #2a2a2a'
+  },
+  unitOptionActive: {
+    padding: '10px 14px', color: '#4caf50', fontSize: 15,
+    cursor: 'pointer', borderBottom: '1px solid #2a2a2a',
+    background: '#1a2e1a', fontWeight: 600
   },
   btn: {
     width: '100%', padding: 14, border: 'none', borderRadius: 10,
@@ -58,6 +72,7 @@ export default function QuickAdd({ onClose, onAdded }) {
   const [name, setName] = useState('');
   const [quantity, setQuantity] = useState('1');
   const [unit, setUnit] = useState('pcs');
+  const [showUnits, setShowUnits] = useState(false);
 
   async function handleAdd() {
     const trimmed = name.trim();
@@ -80,7 +95,7 @@ export default function QuickAdd({ onClose, onAdded }) {
 
   return (
     <div style={styles.overlay} onClick={onClose}>
-      <div style={styles.modal} onClick={e => e.stopPropagation()}>
+      <div style={styles.modal} onClick={e => { e.stopPropagation(); setShowUnits(false); }}>
         <div style={styles.title}>Quick Add</div>
         <span style={styles.label}>Item name</span>
         <input
@@ -101,17 +116,27 @@ export default function QuickAdd({ onClose, onAdded }) {
               onChange={e => setQuantity(e.target.value)}
             />
           </div>
-          <div style={styles.halfCol}>
+          <div style={styles.halfCol} onClick={e => e.stopPropagation()}>
             <span style={styles.label}>Unit</span>
-            <select
-              style={styles.select}
-              value={unit}
-              onChange={e => setUnit(e.target.value)}
+            <button
+              style={styles.unitBtn}
+              onClick={() => setShowUnits(!showUnits)}
             >
-              {UNITS.map(u => (
-                <option key={u} value={u}>{u}</option>
-              ))}
-            </select>
+              {unit} ▾
+            </button>
+            {showUnits && (
+              <div style={styles.unitDropdown}>
+                {UNITS.map(u => (
+                  <div
+                    key={u}
+                    style={u === unit ? styles.unitOptionActive : styles.unitOption}
+                    onClick={() => { setUnit(u); setShowUnits(false); }}
+                  >
+                    {u}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         <button style={styles.btn} onClick={handleAdd}>Add to Pantry</button>
