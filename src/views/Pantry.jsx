@@ -15,11 +15,11 @@ const styles = {
   list: { padding: '0 16px' },
   cardWrapper: {
     position: 'relative', marginBottom: 12, borderRadius: 16,
-    overflow: 'hidden', background: '#0a0a0a'
+    overflow: 'hidden', background: '#161616'
   },
   cardWrapperDue: {
     position: 'relative', marginBottom: 12, borderRadius: 16,
-    overflow: 'hidden', background: '#0a0a0a',
+    overflow: 'hidden', background: '#161616',
     animation: 'restockPulse 2.5s ease-in-out infinite'
   },
   actions: {
@@ -73,21 +73,27 @@ function SwipeCard({ children, onEdit, onDelete, isDue }) {
   const startX = useRef(0);
   const currentX = useRef(0);
   const cardRef = useRef(null);
-  const [swiped, setSwiped] = useState(false);
+  const actionsRef = useRef(null);
 
   function handleTouchStart(e) {
     startX.current = e.touches[0].clientX;
     if (cardRef.current) {
       cardRef.current.style.transition = 'none';
     }
+    if (actionsRef.current) {
+      actionsRef.current.style.opacity = '0';
+    }
   }
 
   function handleTouchMove(e) {
     const diff = e.touches[0].clientX - startX.current;
     currentX.current = Math.min(0, Math.max(-140, diff));
-    if (currentX.current < -10 && !swiped) setSwiped(true);
     if (cardRef.current) {
       cardRef.current.style.transform = `translateX(${currentX.current}px)`;
+    }
+    if (actionsRef.current) {
+      const progress = Math.min(1, Math.abs(currentX.current) / 60);
+      actionsRef.current.style.opacity = String(progress);
     }
   }
 
@@ -96,9 +102,10 @@ function SwipeCard({ children, onEdit, onDelete, isDue }) {
       cardRef.current.style.transition = 'transform 0.2s ease';
       if (currentX.current < -50) {
         cardRef.current.style.transform = 'translateX(-140px)';
+        if (actionsRef.current) actionsRef.current.style.opacity = '1';
       } else {
         cardRef.current.style.transform = 'translateX(0)';
-        setSwiped(false);
+        if (actionsRef.current) actionsRef.current.style.opacity = '0';
       }
     }
   }
@@ -107,18 +114,18 @@ function SwipeCard({ children, onEdit, onDelete, isDue }) {
     if (cardRef.current) {
       cardRef.current.style.transition = 'transform 0.2s ease';
       cardRef.current.style.transform = 'translateX(0)';
-      setSwiped(false);
+    }
+    if (actionsRef.current) {
+      actionsRef.current.style.opacity = '0';
     }
   }
 
   return (
     <div style={isDue ? styles.cardWrapperDue : styles.cardWrapper}>
-      {swiped && (
-        <div style={styles.actions}>
-          <button style={styles.editBtn} onClick={() => { resetSwipe(); onEdit(); }}>Edit</button>
-          <button style={styles.delBtn} onClick={() => { resetSwipe(); onDelete(); }}>Delete</button>
-        </div>
-      )}
+      <div ref={actionsRef} style={{ ...styles.actions, opacity: 0 }}>
+        <button style={styles.editBtn} onClick={() => { resetSwipe(); onEdit(); }}>Edit</button>
+        <button style={styles.delBtn} onClick={() => { resetSwipe(); onDelete(); }}>Delete</button>
+      </div>
       <div
         ref={cardRef}
         onTouchStart={handleTouchStart}
