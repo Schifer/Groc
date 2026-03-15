@@ -36,13 +36,13 @@ const styles = {
     color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer'
   },
   card: {
-    position: 'relative', background: '#141414', borderRadius: 16,
+    position: 'relative', background: '#161616', borderRadius: 16,
     padding: '18px 16px', display: 'flex', justifyContent: 'space-between',
     alignItems: 'center', transition: 'transform 0.2s ease',
-    zIndex: 2
+    zIndex: 2, border: 'none', outline: 'none'
   },
   cardDue: {
-    position: 'relative', background: '#141414', borderRadius: 16,
+    position: 'relative', background: '#161616', borderRadius: 16,
     padding: '18px 16px', display: 'flex', justifyContent: 'space-between',
     alignItems: 'center', transition: 'transform 0.2s ease',
     zIndex: 2, borderLeft: '3px solid #ff3c3c'
