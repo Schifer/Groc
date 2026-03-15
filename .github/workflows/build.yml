@@ -37,8 +37,11 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug
 
+      - name: Rename APK
+        run: mv android/app/build/outputs/apk/debug/app-debug.apk android/app/build/outputs/apk/debug/Groc.apk
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: groc-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: Groc
+          path: android/app/build/outputs/apk/debug/Groc.apk
