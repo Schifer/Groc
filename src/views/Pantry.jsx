@@ -12,21 +12,20 @@ const pulseKeyframes = `
 `;
 
 const styles = {
-  list: { padding: '0 16px', overflow: 'hidden' },
+  list: { padding: '0 16px' },
   cardWrapper: {
     position: 'relative', marginBottom: 12, borderRadius: 16,
-    overflow: 'hidden'
+    overflow: 'hidden', background: '#0a0a0a'
   },
   cardWrapperDue: {
     position: 'relative', marginBottom: 12, borderRadius: 16,
-    overflow: 'hidden',
+    overflow: 'hidden', background: '#0a0a0a',
     animation: 'restockPulse 2.5s ease-in-out infinite'
   },
   actions: {
-    position: 'absolute', right: 0, top: 0, bottom: 0, left: 0,
+    position: 'absolute', right: 0, top: 0, bottom: 0,
     display: 'flex', alignItems: 'stretch',
-    justifyContent: 'flex-end',
-    background: '#0a0a0a', borderRadius: 16
+    zIndex: 1
   },
   editBtn: {
     width: 70, border: 'none', background: '#2196f3',
@@ -40,13 +39,13 @@ const styles = {
     position: 'relative', background: '#141414', borderRadius: 16,
     padding: '18px 16px', display: 'flex', justifyContent: 'space-between',
     alignItems: 'center', transition: 'transform 0.2s ease',
-    zIndex: 2, border: '1px solid #1e1e1e'
+    zIndex: 2
   },
   cardDue: {
     position: 'relative', background: '#141414', borderRadius: 16,
     padding: '18px 16px', display: 'flex', justifyContent: 'space-between',
     alignItems: 'center', transition: 'transform 0.2s ease',
-    zIndex: 2, borderLeft: '3px solid #ff3c3c', border: '1px solid #2a1a1a'
+    zIndex: 2, borderLeft: '3px solid #ff3c3c'
   },
   name: { fontSize: 17, fontWeight: 700, color: '#fff' },
   meta: {
