@@ -45,10 +45,10 @@ export async function deleteItem(id) {
 // --- Seed Data ---
 
 const SEED_ITEMS = [
-  { name: 'Oats', quantity: 1, unit: 'kg', threshold: 1 },
-  { name: 'Peanuts', quantity: 1, unit: 'kg', threshold: 1 },
-  { name: 'Water Can', quantity: 2, unit: 'can', threshold: 1 },
-  { name: 'Seeds', quantity: 1, unit: 'pack', threshold: 1 }
+  { name: 'Oats', quantity: 1, unit: 'kg' },
+  { name: 'Peanuts', quantity: 1, unit: 'kg' },
+  { name: 'Water Can', quantity: 2, unit: 'can' },
+  { name: 'Seeds', quantity: 1, unit: 'pack' }
 ];
 
 export async function seedIfEmpty() {
@@ -61,7 +61,6 @@ export async function seedIfEmpty() {
       name: seed.name,
       quantity: seed.quantity,
       unit: seed.unit,
-      threshold: seed.threshold,
       status: 'pantry',
       restockHistory: [],
       avgRestockDays: 0

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { putItem } from './db.js';
 
+const UNITS = ['pcs', 'kg', 'g', 'L', 'ml', 'box', 'can', 'pack', 'dozen', 'bottle', 'pouch', 'bag'];
+
 const styles = {
   overlay: {
     position: 'fixed', inset: 0,
@@ -34,6 +36,12 @@ const styles = {
     background: '#222', border: '1px solid #333', borderRadius: 8,
     color: '#eee', fontSize: 16, outline: 'none'
   },
+  select: {
+    width: '100%', padding: '12px 14px',
+    background: '#222', border: '1px solid #333', borderRadius: 8,
+    color: '#eee', fontSize: 16, outline: 'none',
+    appearance: 'none', WebkitAppearance: 'none'
+  },
   btn: {
     width: '100%', padding: 14, border: 'none', borderRadius: 10,
     background: '#4caf50', color: '#fff', fontSize: 16,
@@ -50,7 +58,6 @@ export default function QuickAdd({ onClose, onAdded }) {
   const [name, setName] = useState('');
   const [quantity, setQuantity] = useState('1');
   const [unit, setUnit] = useState('pcs');
-  const [threshold, setThreshold] = useState('1');
 
   async function handleAdd() {
     const trimmed = name.trim();
@@ -60,8 +67,7 @@ export default function QuickAdd({ onClose, onAdded }) {
       id: crypto.randomUUID(),
       name: trimmed,
       quantity: Number(quantity) || 1,
-      unit: unit.trim() || 'pcs',
-      threshold: Number(threshold) || 1,
+      unit,
       status: 'pantry',
       restockHistory: [],
       avgRestockDays: 0
@@ -97,22 +103,17 @@ export default function QuickAdd({ onClose, onAdded }) {
           </div>
           <div style={styles.halfCol}>
             <span style={styles.label}>Unit</span>
-            <input
-              style={styles.halfInput}
-              placeholder="kg, pcs, L"
+            <select
+              style={styles.select}
               value={unit}
               onChange={e => setUnit(e.target.value)}
-            />
+            >
+              {UNITS.map(u => (
+                <option key={u} value={u}>{u}</option>
+              ))}
+            </select>
           </div>
         </div>
-        <span style={styles.label}>Low stock threshold</span>
-        <input
-          style={styles.input}
-          placeholder="Notify when qty drops below this"
-          type="number"
-          value={threshold}
-          onChange={e => setThreshold(e.target.value)}
-        />
         <button style={styles.btn} onClick={handleAdd}>Add to Pantry</button>
         <button style={styles.cancel} onClick={onClose}>Cancel</button>
       </div>

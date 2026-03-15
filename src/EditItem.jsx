@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { putItem } from './db.js';
 
+const UNITS = ['pcs', 'kg', 'g', 'L', 'ml', 'box', 'can', 'pack', 'dozen', 'bottle', 'pouch', 'bag'];
+
 const styles = {
   overlay: {
     position: 'fixed', inset: 0,
@@ -34,6 +36,12 @@ const styles = {
     background: '#222', border: '1px solid #333', borderRadius: 8,
     color: '#eee', fontSize: 16, outline: 'none'
   },
+  select: {
+    width: '100%', padding: '12px 14px',
+    background: '#222', border: '1px solid #333', borderRadius: 8,
+    color: '#eee', fontSize: 16, outline: 'none',
+    appearance: 'none', WebkitAppearance: 'none'
+  },
   btn: {
     width: '100%', padding: 14, border: 'none', borderRadius: 10,
     background: '#2196f3', color: '#fff', fontSize: 16,
@@ -50,7 +58,6 @@ export default function EditItem({ item, onClose, onSaved }) {
   const [name, setName] = useState(item.name);
   const [quantity, setQuantity] = useState(String(item.quantity));
   const [unit, setUnit] = useState(item.unit);
-  const [threshold, setThreshold] = useState(String(item.threshold));
 
   async function handleSave() {
     const trimmed = name.trim();
@@ -60,8 +67,7 @@ export default function EditItem({ item, onClose, onSaved }) {
       ...item,
       name: trimmed,
       quantity: Number(quantity) || 1,
-      unit: unit.trim() || 'pcs',
-      threshold: Number(threshold) || 1
+      unit
     };
 
     await putItem(updated);
@@ -92,20 +98,17 @@ export default function EditItem({ item, onClose, onSaved }) {
           </div>
           <div style={styles.halfCol}>
             <span style={styles.label}>Unit</span>
-            <input
-              style={styles.halfInput}
+            <select
+              style={styles.select}
               value={unit}
               onChange={e => setUnit(e.target.value)}
-            />
+            >
+              {UNITS.map(u => (
+                <option key={u} value={u}>{u}</option>
+              ))}
+            </select>
           </div>
         </div>
-        <span style={styles.label}>Low stock threshold</span>
-        <input
-          style={styles.input}
-          type="number"
-          value={threshold}
-          onChange={e => setThreshold(e.target.value)}
-        />
         <button style={styles.btn} onClick={handleSave}>Save Changes</button>
         <button style={styles.cancel} onClick={onClose}>Cancel</button>
       </div>
