@@ -19,12 +19,13 @@ const styles = {
   },
   cardWrapperDue: {
     position: 'relative', marginBottom: 12, borderRadius: 16,
-    overflow: 'visible',
+    overflow: 'hidden',
     animation: 'restockPulse 2.5s ease-in-out infinite'
   },
   actions: {
     position: 'absolute', right: 0, top: 0, bottom: 0,
-    display: 'flex', alignItems: 'stretch'
+    display: 'flex', alignItems: 'stretch',
+    borderRadius: '0 16px 16px 0', overflow: 'hidden'
   },
   editBtn: {
     width: 70, border: 'none', background: '#2196f3',
