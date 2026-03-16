@@ -45,6 +45,9 @@ const styles = {
   },
   content: {
     flex: 1, paddingTop: 16, paddingBottom: 20
+  },
+  debug: {
+    padding: '8px 20px', fontSize: 10, color: '#444', textAlign: 'center'
   }
 };
 
@@ -52,10 +55,21 @@ export default function App() {
   const [tab, setTab] = useState(0);
   const [items, setItems] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
+  const [dbStatus, setDbStatus] = useState('loading...');
 
   const loadItems = useCallback(async () => {
-    const all = await getAllItems();
-    setItems(all);
+    try {
+      const all = await getAllItems();
+      setItems(all);
+      const counts = {
+        pantry: all.filter(i => i.status === 'pantry').length,
+        to_buy: all.filter(i => i.status === 'to_buy').length,
+        bought: all.filter(i => i.status === 'bought').length
+      };
+      setDbStatus(`P:${counts.pantry} B:${counts.to_buy} D:${counts.bought} T:${all.length}`);
+    } catch (e) {
+      setDbStatus('DB ERROR: ' + e.message);
+    }
   }, []);
 
   useEffect(() => {
@@ -91,6 +105,8 @@ export default function App() {
           </button>
         ))}
       </div>
+
+      <div style={styles.debug}>{dbStatus}</div>
 
       <div style={styles.content}>
         {tab === 0 && <Pantry items={items} onRefresh={loadItems} />}
